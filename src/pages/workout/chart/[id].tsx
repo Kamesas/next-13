@@ -18,28 +18,19 @@ const Today = ({ todo }: any) => {
 
 export default Today;
 
-// export async function getServerSideProps({ params }: any) {
-//   const todo: Array<any> = await fetch(
-//     `https://jsonplaceholder.typicode.com/todos/${params?.id}`
-//   ).then((response) => response.json());
-
-//   console.log("params", params);
-//   console.log("curr", todo);
-
-//   return {
-//     props: {
-//       todo,
-//     },
-//   };
-// }
-
-export async function getStaticProps({ params }: any) {
+export async function getServerSideProps({ params }: any) {
   const todo: Array<any> = await fetch(
     `https://jsonplaceholder.typicode.com/todos/${params?.id}`
   ).then((response) => response.json());
 
-  console.log("params", params);
-  console.log("curr", todo);
+  if (!Object.keys(todo).length) {
+    return {
+      redirect: {
+        destination: "/workout/chart",
+        permanent: false,
+      },
+    };
+  }
 
   return {
     props: {
@@ -48,23 +39,44 @@ export async function getStaticProps({ params }: any) {
   };
 }
 
-export async function getStaticPaths() {
-  const all: Array<any> = await fetch(
-    "https://jsonplaceholder.typicode.com/todos"
-  ).then((response) => response.json());
+// export async function getStaticProps({ params }: any) {
+//   const todo: Array<any> = await fetch(
+//     `https://jsonplaceholder.typicode.com/todos/${params?.id}`
+//   ).then((response) => response.json());
 
-  const paths = all?.map((item: any) => ({ params: { id: String(item?.id) } }));
+//   if (!Object.keys(todo).length) {
+//     return {
+//       redirect: {
+//         destination: "/workout/chart",
+//         permanent: false,
+//       },
+//     };
+//   }
 
-  console.log("paths", paths);
-  // const paths = [
-  //   {
-  //     params: {
-  //       id: "3",
-  //     },
-  //   },
-  // ];
-  return {
-    paths,
-    fallback: "blocking",
-  };
-}
+//   return {
+//     props: {
+//       todo,
+//     },
+//   };
+// }
+
+// export async function getStaticPaths() {
+//   const all: Array<any> = await fetch(
+//     "https://jsonplaceholder.typicode.com/todos"
+//   ).then((response) => response.json());
+
+//   const paths = all?.map((item: any) => ({ params: { id: String(item?.id) } }));
+
+//   console.log("paths", paths);
+//   // const paths = [
+//   //   {
+//   //     params: {
+//   //       id: "3",
+//   //     },
+//   //   },
+//   // ];
+//   return {
+//     paths,
+//     fallback: "blocking",
+//   };
+// }
